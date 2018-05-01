@@ -1,4 +1,13 @@
 const w : number = window.innerWidth, h : number = window.innerHeight
+const colors : Array<string> = ["#2ecc71" , "#e74c3c", "#1abc9c", "#f1c40f", "#3498db"]
+
+function drawArc(context: CanvasRenderingContext2D, i : number) {
+    context.fillStyle = colors[i]
+    context.beginPath()
+    context.arc(w/2, h/2, Math.min(w, h)/10, 0, 2 * Math.PI)
+    context.fill()
+}
+
 class LinkedCircleStage {
     canvas : HTMLCanvasElement = document.createElement('canvas')
     context : CanvasRenderingContext2D
@@ -58,5 +67,43 @@ class Animator {
             this.animated = false
             clearInterval(this.interval)
         }
+    }
+}
+
+class LCNode {
+    next : LCNode
+    prev : LCNode
+    state : State = new State()
+    constructor(public i : number) {
+        this.addNeighbor()
+    }
+
+    addNeighbor() {
+        if (this.i < colors.length - 1) {
+            const NODE = new LCNode(this.i+1)
+            this.next = NODE
+            NODE.prev = this
+        }
+    }
+
+    draw(context : CanvasRenderingContext2D) {
+        context.save()
+        context.translate(0, h/2 * (1 - 2 * this.state.scale))
+        drawArc(context, this.i)
+        context.save()
+        context.translate(h/2, 0)
+        if (this.next) {
+            this.next.draw(context)
+        }
+        context.restore()
+        context.restore()
+    }
+
+    update(stopcb : Function) {
+        this.state.update(stopcb)
+    }
+
+    startUpdating(startcb : Function) {
+        this.state.startUpdating(startcb)
     }
 }
