@@ -11,6 +11,8 @@ function drawArc(context: CanvasRenderingContext2D, i : number) {
 class LinkedCircleStage {
     canvas : HTMLCanvasElement = document.createElement('canvas')
     context : CanvasRenderingContext2D
+    linkedCircle : LinkedCircle = new LinkedCircle()
+    animator : Animator = new Animator()
     constructor() {
         this.initCanvas()
     }
@@ -25,6 +27,20 @@ class LinkedCircleStage {
     render() {
         this.context.fillStyle = '#212121'
         this.context.fillRect(0, 0, w, h)
+        this.linkedCircle.draw(this.context)
+    }
+
+    handleTap() {
+        this.canvas.onmousedown = () => {
+            this.linkedCircle.startUpdating(() => {
+                this.animator.start(() => {
+                    this.render()
+                    this.linkedCircle.update(() => {
+                        this.animator.stop()
+                    })
+                })
+            })
+        }
     }
 }
 
