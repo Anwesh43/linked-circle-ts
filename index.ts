@@ -157,3 +157,9 @@ class LinkedCircle {
         this.curr.startUpdating(startcb)
     }
 }
+
+function initLinkedCircleStage() {
+    const stage : LinkedCircleStage = new LinkedCircleStage()
+    stage.render()
+    stage.handleTap()
+}
