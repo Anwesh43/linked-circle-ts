@@ -4,7 +4,7 @@ const colors : Array<string> = ["#2ecc71" , "#e74c3c", "#1abc9c", "#f1c40f", "#3
 function drawArc(context: CanvasRenderingContext2D, i : number) {
     context.fillStyle = colors[i]
     context.beginPath()
-    context.arc(w/2, h/2, Math.min(w, h)/10, 0, 2 * Math.PI)
+    context.arc(w/2, 0, Math.min(w, h)/10, 0, 2 * Math.PI)
     context.fill()
 }
 
@@ -51,8 +51,9 @@ class State {
     update(stopcb : Function) {
         this.scale += 0.1 * this.dir
         if (Math.abs(this.scale - this.prevScale) > 1) {
-            this.prevScale = this.scale + this.dir
+            this.scale = this.prevScale + this.dir
             this.dir = 0
+            this.prevScale = this.scale
             stopcb()
         }
     }
@@ -82,6 +83,7 @@ class Animator {
         if (this.animated) {
             this.animated = false
             clearInterval(this.interval)
+            console.log(`stopped ${JSON.stringify(this)}`)
         }
     }
 }
@@ -107,7 +109,7 @@ class LCNode {
         context.translate(0, h/2 * (1 - 2 * this.state.scale))
         drawArc(context, this.i)
         context.save()
-        context.translate(h/2, 0)
+        context.translate(0, h/2)
         if (this.next) {
             this.next.draw(context)
         }
