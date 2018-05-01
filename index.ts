@@ -106,4 +106,16 @@ class LCNode {
     startUpdating(startcb : Function) {
         this.state.startUpdating(startcb)
     }
+
+    getNext(dir, cb) {
+        var curr : LCNode = this.prev
+        if (dir == 1) {
+            curr = this.next
+        }
+        if (curr) {
+            return curr
+        }
+        cb()
+        return this
+    }
 }
